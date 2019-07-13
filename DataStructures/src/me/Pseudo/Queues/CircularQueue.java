@@ -12,10 +12,8 @@ import java.util.ArrayList;
  */
 public class CircularQueue<T> {
 	
-	// Head and tail
 	private int head = 0, tail = 0;
-	
-	// ArrayList that will be used as circular buffer
+
 	private final ArrayList<T> content;
 	
 	/**
@@ -31,7 +29,7 @@ public class CircularQueue<T> {
 	}
 	
 	/**
-	 * Push an item to the front of the buffer
+	 * Push an item to the front of the queue
 	 * @param item to push
 	 */
 	public void push(T item) {
@@ -42,13 +40,12 @@ public class CircularQueue<T> {
 			return;
 		}
 		
-		// Increase head by one and assign new head
+		// Shift head modulo for wrapping
 		this.head = (this.head + 1) % this.content.size();
 		this.content.set(this.head, item);
 		
+		// Shift tail if required
 		if(this.head == this.tail) {
-			// If head now equals tail then last item has been
-			// overwritten tail must be adjusted
 			this.tail = (this.tail + 1) % this.content.size();
 		}
 		
