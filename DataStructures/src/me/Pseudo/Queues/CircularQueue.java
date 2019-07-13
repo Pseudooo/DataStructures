@@ -94,7 +94,7 @@ public class CircularQueue<T> {
 		
 	}
 	
-	public List<T> asArray() {
+	public List<T> asList() {
 		return this.page(0, this.size());
 	}
 	
