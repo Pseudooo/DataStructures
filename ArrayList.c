@@ -101,3 +101,12 @@ int al_get(ArrayList* arr, int index, void* dest)
 	return 1;
 
 }
+
+/**
+	Will clear the ArrayList from memory
+*/
+void al_dispose(ArrayList* arr)
+{
+	free(arr->arr);
+	free(arr);
+}

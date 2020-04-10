@@ -15,4 +15,6 @@ int al_append(ArrayList* arr, void* data);
 int al_set(ArrayList* arr, int index, void* data);
 int al_get(ArrayList* arr, int index, void* dest);
 
+void al_dispose(ArrayList* arr);
+
 #endif 
