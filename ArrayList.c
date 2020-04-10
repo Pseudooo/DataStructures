@@ -94,6 +94,22 @@ int al_append(ArrayList* arr, void* data)
 }
 
 /**
+	Removes the last element of the array
+	1 - Success
+	0 - Empty Array Failure
+*/
+int al_prepend(ArrayList* arr)
+{
+	
+	if(arr->length == 0)
+		return 0;
+
+	arr->length--;
+	return 1;
+
+}
+
+/**
 	Set a specific index within the defined array
 	1 - Success
 	0 - Index Out Of Bounds
