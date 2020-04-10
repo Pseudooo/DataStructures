@@ -119,15 +119,37 @@ int al_prepend(ArrayList* arr)
 int al_push(ArrayList* arr, void* data)
 {
 
+	// Grow array with an offset from beginning
+	if(!al_grow_arr(arr, 1, 1))
+		return 0;
+
+	al_set(arr, 0, data);
+	return 1;
+
 }
 
 /**
 	Removes value at the front of the array
 	1 - Success
 	0 - Empty Array Failure
+   -1 - Failed to allocate space in mem
 */
 int al_pop(ArrayList* arr)
 {
+
+	if(arr->length == 0)
+		return 0;
+
+	void* buff = malloc(arr->elem_size);
+	if(buff == NULL) 
+		return -1;
+
+	// Shift elements to front
+	for(int i = 0; i < arr->length - 1; i++)
+		al_get(arr, i+1, arr->arr + (arr->elem_size*i));
+
+	arr->length--;
+	return 1;
 
 }
 
