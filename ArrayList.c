@@ -110,6 +110,26 @@ int al_prepend(ArrayList* arr)
 }
 
 /**
+	Adds a new value to the front of the array
+	1 - Success
+	0 - Failed to realloc array
+*/
+int al_push(ArrayList* arr, void* data)
+{
+	
+}
+
+/**
+	Removes value at the front of the array
+	1 - Success
+	0 - Empty Array Failure
+*/
+int al_pop(ArrayList* arr)
+{
+
+}
+
+/**
 	Set a specific index within the defined array
 	1 - Success
 	0 - Index Out Of Bounds

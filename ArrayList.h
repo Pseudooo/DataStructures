@@ -13,6 +13,9 @@ ArrayList* al_init(const size_t elem_size);
 int al_append(ArrayList* arr, void* data);
 int al_prepend(ArrayList* arr);
 
+int al_push(ArrayList* arr, void* data);
+int al_pop(ArrayList* arr, void* data);
+
 int al_set(ArrayList* arr, int index, void* data);
 int al_get(ArrayList* arr, int index, void* dest);
 
