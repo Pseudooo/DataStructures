@@ -7,6 +7,7 @@ typedef struct {
 	void* arr;
 } ArrayList;
 
+ArrayList* al_initsize(const size_t elem_size, const size_t init_size);
 ArrayList* al_init(const size_t elem_size);
 
 int al_append(ArrayList* arr, void* data);

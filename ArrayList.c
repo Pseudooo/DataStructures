@@ -11,7 +11,7 @@
 	Will initialize an ArrayList and return its pointer
 	Will return null if any allocation fails internally
 */
-ArrayList* al_init(const size_t elem_size)
+ArrayList* al_initsize(const size_t elem_size, const size_t init_size)
 {
 
 	// Attempt alloc 
@@ -19,7 +19,7 @@ ArrayList* al_init(const size_t elem_size)
 	if(arr == NULL) return NULL;
 
 	arr->elem_size = elem_size;
-	arr->alloc = elem_size * 10; // init capacity of ten items
+	arr->alloc = elem_size * init_size; // init capacity of ten items
 	arr->length = 0; // init empty
 
 	// Attempt to allocate internal array
@@ -34,6 +34,11 @@ ArrayList* al_init(const size_t elem_size)
 	// Return pointer
 	return arr;
 
+}
+
+ArrayList* al_init(const size_t elem_size)
+{
+	return al_initsize(elem_size, 10);
 }
 
 /**
