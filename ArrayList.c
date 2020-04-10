@@ -48,9 +48,13 @@ ArrayList* al_init(const size_t elem_size)
 	Grow the internal array by n elements.
 	1 - Success
 	0 - Realloc failure
+   -1 - Invalid Offset
 */
 int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 {
+
+	if(offset > extSize)
+		return -1;
 
 	// Grow array
 	arr->length += extSize;
