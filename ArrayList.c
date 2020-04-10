@@ -5,6 +5,9 @@
 
 #include "ArrayList.h"
 
+// Helper function definitions
+int al_grow_arr(ArrayList* arr, const int extSize);
+
 // * * * * * * * * * * * * CONSTRUCTORS
 
 /**
@@ -42,6 +45,39 @@ ArrayList* al_init(const size_t elem_size)
 }
 
 /**
+	Grow the internal array by n elements.
+	1 - Success
+	0 - Realloc failure
+*/
+int al_grow_arr(ArrayList* arr, const int extSize)
+{
+
+	// Grow array
+	arr->length += extSize;
+
+	if(arr->length * arr->elem_size > arr->alloc)
+	{
+		// Realloc needed (Stole from cython teehee)
+		int newAllocSize = (arr->alloc << 3) + (arr->alloc < 9 ? 3 : 6);
+		int oldAllocSize = arr->alloc;
+		arr->alloc = newAllocSize;
+
+		void* newArr = realloc(arr->arr, arr->alloc);
+		if(newArr == NULL)
+		{
+			// Realloc failed, reset internal alloc and length
+			arr->length -= extSize;
+			arr->alloc = oldAllocSize;
+
+			return 0;
+		}
+
+	}
+	return 1;
+
+}
+
+/**
 	Adds a new value onto the end of the array
 	1 - Success
 	0 - Failed to reallocate array (No changes made)
@@ -49,21 +85,8 @@ ArrayList* al_init(const size_t elem_size)
 int al_append(ArrayList* arr, void* data)
 {
 
-	// Increase length and check if a realloc is needed
-	if(++arr->length * arr->elem_size > arr->alloc)
-	{
-		// Calculate new allocated size (Copied from cython)
-		int newAlloc = (arr->alloc << 3) + (arr->alloc < 9 ? 3 : 6);
-		arr->alloc = newAlloc;
-
-		// Attempt realloc
-		void* newArr = realloc(arr->arr, arr->alloc);
-		if(newArr == NULL)
-			return 0; // Realloc failed
-
-		// Assign array
-		arr->arr = newArr;
-	}
+	if(!al_grow_arr(arr, 1))
+		return 0;
 
 	// Set the last element to be the given value
 	return al_set(arr, arr->length - 1, data);
