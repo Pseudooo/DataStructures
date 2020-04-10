@@ -6,7 +6,7 @@
 #include "ArrayList.h"
 
 // Helper function definitions
-int al_grow_arr(ArrayList* arr, const int extSize);
+int al_grow_arr(ArrayList* arr, const int extSize, const int offset);
 
 // * * * * * * * * * * * * CONSTRUCTORS
 
@@ -49,7 +49,7 @@ ArrayList* al_init(const size_t elem_size)
 	1 - Success
 	0 - Realloc failure
 */
-int al_grow_arr(ArrayList* arr, const int extSize)
+int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 {
 
 	// Grow array
@@ -59,20 +59,22 @@ int al_grow_arr(ArrayList* arr, const int extSize)
 	{
 		// Realloc needed (Stole from cython teehee)
 		int newAllocSize = (arr->alloc << 3) + (arr->alloc < 9 ? 3 : 6);
-		int oldAllocSize = arr->alloc;
-		arr->alloc = newAllocSize;
 
-		void* newArr = realloc(arr->arr, arr->alloc);
+		void* newArr = malloc(newAllocSize);
 		if(newArr == NULL)
 		{
-			// Realloc failed, reset internal alloc and length
+			// Malloc failed, reset length
 			arr->length -= extSize;
-			arr->alloc = oldAllocSize;
-
 			return 0;
 		}
-
+		
+		// Malloc was success, copy old array over with offset
+		memcpy(newArr + (offset*arr->elem_size), arr->arr, arr->alloc);
+		free(arr->arr); // Free old array
+		arr->alloc = newAllocSize;
+		arr->arr = newArr; // Assign pointer to new array
 	}
+
 	return 1;
 
 }
@@ -85,7 +87,7 @@ int al_grow_arr(ArrayList* arr, const int extSize)
 int al_append(ArrayList* arr, void* data)
 {
 
-	if(!al_grow_arr(arr, 1))
+	if(!al_grow_arr(arr, 1, 0))
 		return 0;
 
 	// Set the last element to be the given value
@@ -116,7 +118,7 @@ int al_prepend(ArrayList* arr)
 */
 int al_push(ArrayList* arr, void* data)
 {
-	
+
 }
 
 /**
