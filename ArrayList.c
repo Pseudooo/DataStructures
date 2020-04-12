@@ -39,6 +39,9 @@ ArrayList* al_initsize(const size_t elem_size, const size_t init_size)
 
 }
 
+/**
+	Default initial allocation is 10
+*/
 ArrayList* al_init(const size_t elem_size)
 {
 	return al_initsize(elem_size, 10);
@@ -61,6 +64,7 @@ int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 
 	if(arr->length * arr->elem_size > arr->alloc)
 	{
+		printf("Reallocating\n");
 		// Realloc needed (Stole from cython teehee)
 		int newAllocSize = (arr->alloc << 3) + (arr->alloc < 9 ? 3 : 6);
 
@@ -77,7 +81,18 @@ int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 		free(arr->arr); // Free old array
 		arr->alloc = newAllocSize;
 		arr->arr = newArr; // Assign pointer to new array
+		return 1;
 	}
+
+	// No need to shift elements
+	if(offset == 0)
+		return 1;
+
+	// Need to shift initial array by offset
+	int initLength = arr->length - extSize;
+
+	for(int i = initLength - 1; i >= 0; i--)
+		al_get(arr, i, arr->arr + (i + offset)*arr->elem_size);
 
 	return 1;
 
