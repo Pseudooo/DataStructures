@@ -56,6 +56,8 @@ ArrayList* al_init(const size_t elem_size)
 int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 {
 
+	// printf("Growing Array by %d:%d\n", extSize, offset);
+
 	if(offset > extSize)
 		return -1;
 
@@ -210,18 +212,19 @@ int al_get(ArrayList* arr, int index, void* dest)
 	0 - ArrayLists have elements of different sizes
    -1 - Array Grow failure
 */
-int extend(ArrayList* arr, ArrayList* ext)
+int al_extend(ArrayList* arr, ArrayList* ext)
 {
 
 	if(arr->elem_size != ext->elem_size)
 		return 0;
 
+	int initLength = arr->length;
 	if(al_grow_arr(arr, ext->length, 0) != 1)
-		return -1:
+		return -1;
 
 	// Append elements
 	for(int i = 0; i < ext->length; i++)
-		al_append(arr, ext->arr + i*ext->elem_size);
+		al_set(arr, initLength + i, ext->arr + i*ext->elem_size);
 
 	return 1;
 

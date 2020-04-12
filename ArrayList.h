@@ -19,6 +19,8 @@ int al_pop(ArrayList* arr);
 int al_set(ArrayList* arr, int index, void* data);
 int al_get(ArrayList* arr, int index, void* dest);
 
+int al_extend(ArrayList* arr1, ArrayList* arr2);
+
 void al_dispose(ArrayList* arr);
 
 #endif 
