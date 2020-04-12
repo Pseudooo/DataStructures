@@ -5,7 +5,7 @@
 
 #include "ArrayList.h"
 
-// Helper function definitions
+// Helper function to use internally
 int al_grow_arr(ArrayList* arr, const int extSize, const int offset);
 
 // * * * * * * * * * * * * CONSTRUCTORS
@@ -21,9 +21,10 @@ ArrayList* al_initsize(const size_t elem_size, const size_t init_size)
 	ArrayList* arr = malloc(sizeof(ArrayList));
 	if(arr == NULL) return NULL;
 
+	// Setup initial values
 	arr->elem_size = elem_size;
-	arr->alloc = elem_size * init_size; // init capacity of ten items
-	arr->length = 0; // init empty
+	arr->alloc = elem_size * init_size;
+	arr->length = 0;
 
 	// Attempt to allocate internal array
 	arr->arr = malloc(arr->alloc);
@@ -31,7 +32,7 @@ ArrayList* al_initsize(const size_t elem_size, const size_t init_size)
 	{
 		// Clear ArrayList on failure
 		free(arr);
-		return NULL;
+		return NULL; // Return null for failure
 	}
 
 	// Return pointer
@@ -56,25 +57,26 @@ ArrayList* al_init(const size_t elem_size)
 int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 {
 
-	// printf("Growing Array by %d:%d\n", extSize, offset);
-
+	// Catch invalid offset values
 	if(offset > extSize)
 		return -1;
 
 	// Grow array
 	arr->length += extSize;
 
+	// Check for reallocation needed
 	if(arr->length * arr->elem_size > arr->alloc)
 	{
-		// Realloc needed (Stole from cython teehee)
+		// Realloc needed (Stole formula from cython teehee)
 		int newAllocSize = (arr->alloc << 3) + (arr->alloc < 9 ? 3 : 6);
 
+		// Attempt to alloc new array space
 		void* newArr = malloc(newAllocSize);
 		if(newArr == NULL)
 		{
 			// Malloc failed, reset length
 			arr->length -= extSize;
-			return 0;
+			return 0; // Indicate error
 		}
 		
 		// Malloc was success, copy old array over with offset
@@ -92,6 +94,7 @@ int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 	// Need to shift initial array by offset
 	int initLength = arr->length - extSize;
 
+	// Shift items by offset
 	for(int i = initLength - 1; i >= 0; i--)
 		al_get(arr, i, arr->arr + (i + offset)*arr->elem_size);
 
@@ -126,6 +129,7 @@ int al_prepend(ArrayList* arr)
 	if(arr->length == 0)
 		return 0;
 
+	// Reduce length
 	arr->length--;
 	return 1;
 
@@ -222,7 +226,7 @@ int al_extend(ArrayList* arr, ArrayList* ext)
 	if(al_grow_arr(arr, ext->length, 0) != 1)
 		return -1;
 
-	// Append elements
+	// Append elements (`al_grow_arr` will increase length so `al_set`)
 	for(int i = 0; i < ext->length; i++)
 		al_set(arr, initLength + i, ext->arr + i*ext->elem_size);
 
