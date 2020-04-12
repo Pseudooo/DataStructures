@@ -64,7 +64,6 @@ int al_grow_arr(ArrayList* arr, const int extSize, const int offset)
 
 	if(arr->length * arr->elem_size > arr->alloc)
 	{
-		printf("Reallocating\n");
 		// Realloc needed (Stole from cython teehee)
 		int newAllocSize = (arr->alloc << 3) + (arr->alloc < 9 ? 3 : 6);
 
@@ -200,6 +199,30 @@ int al_get(ArrayList* arr, int index, void* dest)
 		return 0;
 
 	memcpy(dest, arr->arr + (index * arr->elem_size), arr->elem_size);
+	return 1;
+
+}
+
+/**
+	Will extend `arr` to contain all elements of `ext` appended
+	on to the end
+	1 - Success
+	0 - ArrayLists have elements of different sizes
+   -1 - Array Grow failure
+*/
+int extend(ArrayList* arr, ArrayList* ext)
+{
+
+	if(arr->elem_size != ext->elem_size)
+		return 0;
+
+	if(al_grow_arr(arr, ext->length, 0) != 1)
+		return -1:
+
+	// Append elements
+	for(int i = 0; i < ext->length; i++)
+		al_append(arr, ext->arr + i*ext->elem_size);
+
 	return 1;
 
 }
